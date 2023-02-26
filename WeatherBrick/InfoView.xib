@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+    <device id="retina6_12" orientation="portrait" appearance="light"/>
+    <dependencies>
+        <deployment identifier="iOS"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
+        <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+    </dependencies>
+    <objects>
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="InfoView" customModule="WeatherBrick" customModuleProvider="target">
+            <connections>
+                <outlet property="hideButton" destination="22i-o2-i0L" id="JbT-Rm-q4n"/>
+                <outlet property="infoInternalView" destination="Hkc-i8-0uK" id="aeP-rd-lLp"/>
+                <outlet property="plantedView" destination="9hZ-Al-9s9" id="Wwc-Ch-Wub"/>
+            </connections>
+        </placeholder>
+        <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        <view contentMode="scaleToFill" id="1bB-Db-k5G">
+            <rect key="frame" x="0.0" y="0.0" width="300" height="400"/>
+            <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+            <subviews>
+                <view contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="9hZ-Al-9s9">
+                    <rect key="frame" x="0.0" y="0.0" width="300" height="400"/>
+                    <color key="backgroundColor" red="0.91083008050000003" green="0.41083255410000002" blue="0.23599117989999999" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                </view>
+                <view autoresizesSubviews="NO" contentMode="scaleToFill" id="Hkc-i8-0uK">
+                    <rect key="frame" x="0.0" y="0.0" width="290" height="400"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <subviews>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="INFO" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="vyQ-xq-Tcr">
+                            <rect key="frame" x="100" y="30" width="90" height="16.666666666666671"/>
+                            <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="20"/>
+                            <nil key="textColor"/>
+                            <nil key="highlightedColor"/>
+                        </label>
+                        <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="22i-o2-i0L">
+                            <rect key="frame" x="70" y="330" width="150" height="40"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="40" id="KKf-lk-C2d"/>
+                            </constraints>
+                            <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="20"/>
+                            <inset key="imageEdgeInsets" minX="0.0" minY="0.0" maxX="2.2250738585072014e-308" maxY="0.0"/>
+                            <state key="normal" title="Hide">
+                                <color key="titleColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
+                            </state>
+                            <connections>
+                                <action selector="hideButtonAction:" destination="-1" eventType="touchUpInside" id="W9r-bM-v7v"/>
+                            </connections>
+                        </button>
+                        <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" usesAttributedText="YES" lineBreakMode="tailTruncation" numberOfLines="7" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="t3P-WM-xh3">
+                            <rect key="frame" x="30" y="81.666666666666671" width="230" height="213.33333333333331"/>
+                            <constraints>
+                                <constraint firstAttribute="height" constant="213.33000000000001" id="CSa-3A-Iu8"/>
+                            </constraints>
+                            <attributedString key="attributedText">
+                                <fragment>
+                                    <string key="content">Brick is wet - rainig
+Brick is dry - sunny
+Brick is hard to see - fog
+Brick with cracks - very hot
+Brick with snow - snow
+Brick is swinging - windy
+</string>
+                                    <attributes>
+                                        <font key="NSFont" metaFont="system" size="17"/>
+                                        <paragraphStyle key="NSParagraphStyle" alignment="natural" lineBreakMode="wordWrapping" baseWritingDirection="natural" lineHeightMultiple="1.5" tighteningFactorForTruncation="0.0"/>
+                                    </attributes>
+                                </fragment>
+                                <fragment content="Brick is gone - No internet">
+                                    <attributes>
+                                        <font key="NSFont" metaFont="system" size="17"/>
+                                        <paragraphStyle key="NSParagraphStyle" alignment="natural" lineBreakMode="wordWrapping" baseWritingDirection="natural" lineHeightMultiple="2" tighteningFactorForTruncation="0.0"/>
+                                    </attributes>
+                                </fragment>
+                            </attributedString>
+                            <nil key="highlightedColor"/>
+                        </label>
+                    </subviews>
+                    <viewLayoutGuide key="safeArea" id="BSX-xL-fM7"/>
+                    <color key="backgroundColor" red="0.94405835869999999" green="0.62122666839999996" blue="0.41978806260000001" alpha="1" colorSpace="custom" customColorSpace="displayP3"/>
+                    <constraints>
+                        <constraint firstItem="22i-o2-i0L" firstAttribute="leading" secondItem="BSX-xL-fM7" secondAttribute="leading" constant="70" id="2UL-TJ-00T"/>
+                        <constraint firstItem="BSX-xL-fM7" firstAttribute="trailing" secondItem="22i-o2-i0L" secondAttribute="trailing" constant="70" id="8qx-5X-d9D"/>
+                        <constraint firstItem="vyQ-xq-Tcr" firstAttribute="top" secondItem="Hkc-i8-0uK" secondAttribute="top" constant="30" id="BRH-zf-TqV"/>
+                        <constraint firstItem="t3P-WM-xh3" firstAttribute="top" secondItem="vyQ-xq-Tcr" secondAttribute="bottom" constant="35" id="BYk-Pk-wLB"/>
+                        <constraint firstItem="BSX-xL-fM7" firstAttribute="trailing" secondItem="t3P-WM-xh3" secondAttribute="trailing" constant="30" id="FHg-i3-Eag"/>
+                        <constraint firstAttribute="trailing" secondItem="vyQ-xq-Tcr" secondAttribute="trailing" constant="100" id="GQM-1A-h3i"/>
+                        <constraint firstItem="t3P-WM-xh3" firstAttribute="leading" secondItem="BSX-xL-fM7" secondAttribute="leading" constant="30" id="JDz-tY-kTb"/>
+                        <constraint firstItem="22i-o2-i0L" firstAttribute="top" secondItem="t3P-WM-xh3" secondAttribute="bottom" constant="35" id="cOE-60-LG1"/>
+                        <constraint firstItem="vyQ-xq-Tcr" firstAttribute="leading" secondItem="Hkc-i8-0uK" secondAttribute="leading" constant="100" id="jL4-nX-uxP"/>
+                        <constraint firstItem="BSX-xL-fM7" firstAttribute="bottom" secondItem="22i-o2-i0L" secondAttribute="bottom" constant="30" id="yPL-r3-jQd"/>
+                    </constraints>
+                </view>
+            </subviews>
+            <viewLayoutGuide key="safeArea" id="z2P-23-m6a"/>
+            <constraints>
+                <constraint firstItem="9hZ-Al-9s9" firstAttribute="leading" secondItem="1bB-Db-k5G" secondAttribute="leading" id="Fj3-ba-CLY"/>
+                <constraint firstItem="9hZ-Al-9s9" firstAttribute="top" secondItem="1bB-Db-k5G" secondAttribute="top" id="MoO-vc-Ezn"/>
+                <constraint firstItem="9hZ-Al-9s9" firstAttribute="bottom" secondItem="z2P-23-m6a" secondAttribute="bottom" id="lnl-v4-f3h"/>
+                <constraint firstAttribute="trailing" secondItem="9hZ-Al-9s9" secondAttribute="trailing" id="vWd-58-242"/>
+            </constraints>
+            <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+            <point key="canvasLocation" x="755.72519083969462" y="207.74647887323945"/>
+        </view>
+    </objects>
+</document>
