@@ -7,18 +7,22 @@
 //
 
 import Foundation
+import UIKit
 
 protocol DataServiceDelegate {
     
     func updateViewForRecivedData(id: Int, description: String, temp: Double, windSpeed: Double, country: String, city: String)
     func updateViewForError()
+    func showBadInternetConnectionAlert()
+    func showIncorrectCityNameAlert()
 }
 
 class DataService {
     
-    let appid = "1862f8adffc972f1614b661b86c5c121"
+    private let appid = "1862f8adffc972f1614b661b86c5c121"
+    private let locationService = LocationService.shared
     var delegate: DataServiceDelegate?
-    var locationService = LocationService()
+    static let shared = DataService()
     
     init(){
         locationService.delegate = self
@@ -31,6 +35,7 @@ class DataService {
             guard error == nil else {
                 DispatchQueue.main.async {
                     print(error!.localizedDescription)
+                    self.delegate?.showBadInternetConnectionAlert()
                     self.delegate?.updateViewForError()
                 }
                 return
@@ -49,6 +54,7 @@ class DataService {
             } catch {
                 DispatchQueue.main.async {
                     print(error.localizedDescription)
+                    self.delegate?.showIncorrectCityNameAlert()
                     self.delegate?.updateViewForError()
                 }
             }

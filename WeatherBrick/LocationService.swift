@@ -17,11 +17,14 @@ class LocationService: NSObject {
     
     private let locationManager = CLLocationManager()
     var delegate: LocationServiceDelegate?
+    static let shared = LocationService()
+
     
     func getCurrentLocation() {
+        locationManager.requestWhenInUseAuthorization()
         locationManager.delegate = self
         locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
-        locationManager.requestWhenInUseAuthorization()
+        locationManager.pausesLocationUpdatesAutomatically = false
         locationManager.startUpdatingLocation()
     }
 }
