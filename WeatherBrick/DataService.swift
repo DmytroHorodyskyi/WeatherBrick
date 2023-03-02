@@ -70,6 +70,10 @@ class DataService {
         guard let url = URL(string: "https://api.openweathermap.org/data/2.5/weather?" +
                             "q=\(city)&units=metric&appid=\(appid)")
         else {
+            DispatchQueue.main.async {
+                self.delegate?.showIncorrectCityNameAlert()
+                self.delegate?.updateViewForError()
+            }
             print("Incorrect URL")
             return
         }
