@@ -9,7 +9,6 @@ import QuartzCore
 
 class MainViewController: UIViewController {
     
-    
     @IBOutlet weak var activityIndicator: UIActivityIndicatorView!
     @IBOutlet weak var brickImageView: UIImageView!
     @IBOutlet var brickImageGestureRecognizer: UIPanGestureRecognizer!
@@ -20,11 +19,11 @@ class MainViewController: UIViewController {
     @IBOutlet weak var locationLabel: UILabel!
     @IBOutlet weak var searchLocationTextField: UITextField!
     @IBOutlet weak var searchLocationButton: UIButton!
+    @IBOutlet weak var backFromSearchLoactionButton: UIButton!
     @IBOutlet weak var infoButton: UIButton!
     @IBOutlet weak var infoView: InfoView!
     private var brickImageCenter = CGPoint()
-    private var lastSelectedCity = UserDefaults.standard.string(forKey: "City")
-    private var lastSelectedCountry = UserDefaults.standard.string(forKey: "Country")
+    private var selectedCity: String? = nil
     private let dataService = DataService.shared
     
     override func viewDidLoad() {
@@ -79,6 +78,12 @@ class MainViewController: UIViewController {
         infoButton.isHidden = shouldHide
     }
     
+    private func searchLocationElements(shouldHide: Bool) {
+        searchLocationTextField.isHidden = shouldHide
+        searchLocationButton.isHidden = shouldHide
+        backFromSearchLoactionButton.isHidden = shouldHide
+    }
+    
     private func setDeflectBrickImageView() {
         let amplitude = 15.0
         let period = 0.5
@@ -92,15 +97,8 @@ class MainViewController: UIViewController {
         brickImageView.layer.add(animation, forKey: "swingAnimation")
     }
     
-    private func remember(city: String, country: String) {
-        lastSelectedCity = city
-        UserDefaults.standard.set(city, forKey: "City")
-        lastSelectedCountry = city
-        UserDefaults.standard.set(country, forKey: "Country")
-    }
-    
     private func reloadWeather() {
-        if let city = self.lastSelectedCity {
+        if let city = selectedCity {
             self.dataService.updateWeatherInfo(by: city)
         } else {
             self.dataService.updateWeatherInfoByGeolocation()
@@ -108,19 +106,17 @@ class MainViewController: UIViewController {
     }
     
     private func searchLocation() {
-        if let city = searchLocationTextField.text {
-            if city != "" {
-                dataService.updateWeatherInfo(by: city)
-            }
+        let city: String = searchLocationTextField.text ?? ""
+        if city != "" {
+            selectedCity = city
+            dataService.updateWeatherInfo(by: city)
+        } else {
+            dataService.updateWeatherInfoByGeolocation()
         }
-        searchLocationTextField.isHidden = true
-        searchLocationButton.isHidden = true
-        mainElements(shouldHide: false)
-        searchLocationTextField.resignFirstResponder()
     }
     
     @IBAction func brickImageGestureRecognize(_ sender: UIPanGestureRecognizer) {
-        
+        brickImageView.layer.removeAllAnimations()
         let translation = sender.translation(in: brickImageView.superview)
         switch brickImageGestureRecognizer.state {
         case .began, .changed:
@@ -142,18 +138,27 @@ class MainViewController: UIViewController {
     }
     
     @IBAction func currentLocationButtonAction(_ sender: UIButton) {
+        selectedCity = nil
         dataService.updateWeatherInfoByGeolocation()
     }
     
     
     @IBAction func magnifyingGlassButtonAction(_ sender: UIButton) {
-        searchLocationTextField.isHidden = false
-        searchLocationButton.isHidden = false
+        searchLocationElements(shouldHide: false)
         mainElements(shouldHide: true)
     }
     
     @IBAction func searchLocationButtonAction(_ sender: UIButton) {
         searchLocation()
+        searchLocationElements(shouldHide: true)
+        mainElements(shouldHide: false)
+        searchLocationTextField.resignFirstResponder()
+    }
+    
+    @IBAction func backFroamSearchLocationButtonAction(_ sender: UIButton) {
+        searchLocationElements(shouldHide: true)
+        mainElements(shouldHide: false)
+        searchLocationTextField.resignFirstResponder()
     }
     
     @IBAction func infoButtonAction(_ sender: UIButton) {
@@ -176,7 +181,6 @@ extension MainViewController: UITextFieldDelegate, InfoViewDelegate, DataService
     }
     
     func updateViewForRecivedData(id: Int, description: String, temp: Double, windSpeed: Double, country: String, city: String) {
-        remember(city: city, country: country)
         brickImageView.layer.removeAllAnimations()
         setBrickImageView(by: id, temp: temp)
         temperatureLabel.text = String(Int(temp))
