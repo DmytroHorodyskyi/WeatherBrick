@@ -6,7 +6,7 @@
 //  Copyright © 2023 VAndrJ. All rights reserved.
 //
 
-import Foundation
+import UIKit
 import CoreLocation
 
 protocol LocationServiceDelegate {
@@ -15,22 +15,31 @@ protocol LocationServiceDelegate {
 
 class LocationService: NSObject {
     
-    private let locationManager = CLLocationManager()
+    private var locationManager: CLLocationManager?
     var delegate: LocationServiceDelegate?
     static let shared = LocationService()
-
+    
     
     func getCurrentLocation() {
-        locationManager.requestWhenInUseAuthorization()
-        locationManager.delegate = self
-        locationManager.desiredAccuracy = kCLLocationAccuracyHundredMeters
-        locationManager.pausesLocationUpdatesAutomatically = false
-        locationManager.startUpdatingLocation()
+        locationManager = CLLocationManager()
+        locationManager?.delegate = self
+        locationManager?.requestWhenInUseAuthorization()
     }
 }
 
 
 extension LocationService: CLLocationManagerDelegate {
+    
+    func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
+        switch CLLocationManager.authorizationStatus() {
+        case .authorizedAlways, .authorizedWhenInUse:
+            locationManager?.startUpdatingLocation()
+        case .denied, .notDetermined, .restricted:
+            print("Authorization status:", CLLocationManager.authorizationStatus().rawValue)
+        @unknown default:
+            print("Location authorization unknown")
+        }
+    }
     
     func locationManager(_ manager: CLLocationManager, didUpdateLocations locations: [CLLocation]) {
         let lastLocation = locations.last

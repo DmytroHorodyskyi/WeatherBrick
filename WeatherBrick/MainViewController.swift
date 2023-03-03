@@ -112,6 +112,7 @@ class MainViewController: UIViewController {
             dataService.updateWeatherInfo(by: city)
         } else {
             dataService.updateWeatherInfoByGeolocation()
+            selectedCity = nil
         }
     }
     
