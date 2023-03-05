@@ -15,6 +15,7 @@ protocol DataServiceDelegate {
     func updateViewForError()
     func showBadInternetConnectionAlert()
     func showIncorrectCityNameAlert()
+    func disableGeolocationAlert(show: Bool)
 }
 
 class DataService {
@@ -88,7 +89,7 @@ extension DataService: LocationServiceDelegate {
         guard let latitude = latitude,
               let longitude = longitude
         else {
-            print("Cannot get coordinates")
+            print("Cannot get coordinates for URL")
             return
         }
         guard let url = URL(string: "https://api.openweathermap.org/data/2.5/weather?" +
@@ -96,9 +97,24 @@ extension DataService: LocationServiceDelegate {
                             "&lon=\(longitude)" +
                             "&units=metric&appid=\(appid)")
         else {
-            print("Incorrect URL")
+            print("Incorrect URL: url")
             return
         }
         executeDataTask(with: url)
+    }
+    
+    func disabledGeolocationError(show: Bool) {
+        switch show {
+        case true:
+            DispatchQueue.main.async {
+                self.delegate?.updateViewForError()
+                self.delegate?.disableGeolocationAlert(show: true)
+            }
+        case false:
+            DispatchQueue.main.async {
+                self.delegate?.disableGeolocationAlert(show: false)
+            }
+        }
+
     }
 }

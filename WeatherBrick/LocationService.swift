@@ -11,6 +11,7 @@ import CoreLocation
 
 protocol LocationServiceDelegate {
     func createUrlAndExecuteDataTaskWith(latitude: Double?, longitude: Double? )
+    func disabledGeolocationError(show: Bool)
 }
 
 class LocationService: NSObject {
@@ -34,10 +35,13 @@ extension LocationService: CLLocationManagerDelegate {
         switch CLLocationManager.authorizationStatus() {
         case .authorizedAlways, .authorizedWhenInUse:
             locationManager?.startUpdatingLocation()
+            delegate?.disabledGeolocationError(show: false)
         case .denied, .notDetermined, .restricted:
             print("Authorization status:", CLLocationManager.authorizationStatus().rawValue)
+            delegate?.disabledGeolocationError(show: true)
         @unknown default:
             print("Location authorization unknown")
+            break
         }
     }
     

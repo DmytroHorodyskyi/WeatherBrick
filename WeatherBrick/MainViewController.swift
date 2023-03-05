@@ -213,6 +213,18 @@ extension MainViewController: UITextFieldDelegate, InfoViewDelegate, DataService
         alertController.addAction(action)
         self.present(alertController, animated: true)
     }
+    
+    func disableGeolocationAlert(show: Bool) {
+        let alertController = UIAlertController(title: "Can't get geolocation", message: "Check if geolocation is enabeled in the application settings", preferredStyle: .alert)
+        let action = UIAlertAction(title: "OK", style: .default)
+        alertController.addAction(action)
+        switch show {
+        case true:
+            self.present(alertController, animated: true)
+        case false:
+            self.dismiss(animated: false)
+        }
+    }
 }
 
 
