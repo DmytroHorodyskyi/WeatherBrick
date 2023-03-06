@@ -8,7 +8,7 @@
 
 import Foundation
 
-struct Weather: Codable {
+struct WeatherCondition: Codable {
     var id: Int
     var description: String
 }
@@ -21,9 +21,8 @@ struct Main: Codable {
     var temp = 0.0
 }
 
-struct Sys: Codable {
+struct SysLocation: Codable {
     var country = ""
-    
     func countryName(from countryCode: String) -> String {
         if let name = (Locale(identifier: "en_US") as NSLocale).displayName(forKey: .countryCode, value: countryCode) {
             return name
@@ -35,9 +34,9 @@ struct Sys: Codable {
 
 struct WeatherData: Codable {
     
-    var weather: [Weather] = []
+    var weather: [WeatherCondition] = []
     var main: Main = Main()
     var wind: Wind = Wind()
-    var sys: Sys = Sys()
+    var sys: SysLocation = SysLocation()
     var name: String = ""
 }

@@ -11,7 +11,7 @@ import UIKit
 
 protocol DataServiceDelegate {
     
-    func updateViewForRecivedData(id: Int, description: String, temp: Double, windSpeed: Double, country: String, city: String)
+    func updateViewForRecived(weather data: WeatherData)
     func updateViewForError()
     func showBadInternetConnectionAlert()
     func showIncorrectCityNameAlert()
@@ -30,32 +30,23 @@ class DataService {
     }
     
     private func executeDataTask(with url: URL) {
-        print("executeDataTask", url)
         let session = URLSession.shared
         let task = session.dataTask(with: url) { (data, response, error) in
             guard error == nil else {
                 DispatchQueue.main.async {
-                    print(error!.localizedDescription)
                     self.delegate?.showBadInternetConnectionAlert()
                     self.delegate?.updateViewForError()
                 }
                 return
             }
             do {
-                let weatherData = try JSONDecoder().decode(WeatherData.self, from: data!)
+                guard let data = data else {return}
+                let weatherData = try JSONDecoder().decode(WeatherData.self, from: data)
                 DispatchQueue.main.async {
-                    print(weatherData)
-                    self.delegate?.updateViewForRecivedData(id: weatherData.weather[0].id,
-                                                            description: weatherData.weather[0].description,
-                                                            temp: weatherData.main.temp,
-                                                            windSpeed: weatherData.wind.speed,
-                                                            country: weatherData.sys.countryName(from: weatherData.sys.country),
-                                                            city: weatherData.name)
+                    self.delegate?.updateViewForRecived(weather: weatherData)
                 }
             } catch {
                 DispatchQueue.main.async {
-                    print(error.localizedDescription)
-                    self.delegate?.showIncorrectCityNameAlert()
                     self.delegate?.updateViewForError()
                 }
             }
@@ -75,7 +66,6 @@ class DataService {
                 self.delegate?.showIncorrectCityNameAlert()
                 self.delegate?.updateViewForError()
             }
-            print("Incorrect URL")
             return
         }
         executeDataTask(with: url)
@@ -87,19 +77,12 @@ extension DataService: LocationServiceDelegate {
     
     func createUrlAndExecuteDataTaskWith(latitude: Double?, longitude: Double? ) {
         guard let latitude = latitude,
-              let longitude = longitude
-        else {
-            print("Cannot get coordinates for URL")
-            return
-        }
-        guard let url = URL(string: "https://api.openweathermap.org/data/2.5/weather?" +
-                            "lat=\(latitude)" +
-                            "&lon=\(longitude)" +
-                            "&units=metric&appid=\(appid)")
-        else {
-            print("Incorrect URL: url")
-            return
-        }
+              let longitude = longitude,
+              let url = URL(string: "https://api.openweathermap.org/data/2.5/weather?" +
+                                    "lat=\(latitude)" +
+                                    "&lon=\(longitude)" +
+                                    "&units=metric&appid=\(appid)")
+        else {return}
         executeDataTask(with: url)
     }
     

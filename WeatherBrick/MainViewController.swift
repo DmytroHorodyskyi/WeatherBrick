@@ -23,13 +23,13 @@ class MainViewController: UIViewController {
     @IBOutlet weak var infoButton: UIButton!
     @IBOutlet weak var infoView: InfoView!
     private var brickImageCenter = CGPoint()
-    private var selectedCity: String? = nil
+    //private var selectedCity: String? = nil
     private let dataService = DataService.shared
     
     override func viewDidLoad() {
         super.viewDidLoad()
         dataService.delegate = self
-        reloadWeather()
+        dataService.updateWeatherInfoByGeolocation()
         infoView.delegate = self
         setupInfoButton()
         brickImageCenter = brickImageView.center
@@ -97,22 +97,10 @@ class MainViewController: UIViewController {
         brickImageView.layer.add(animation, forKey: "swingAnimation")
     }
     
-    private func reloadWeather() {
-        if let city = selectedCity {
-            self.dataService.updateWeatherInfo(by: city)
-        } else {
-            self.dataService.updateWeatherInfoByGeolocation()
-        }
-    }
-    
     private func searchLocation() {
         let city: String = searchLocationTextField.text ?? ""
         if city != "" {
-            selectedCity = city
             dataService.updateWeatherInfo(by: city)
-        } else {
-            dataService.updateWeatherInfoByGeolocation()
-            selectedCity = nil
         }
     }
     
@@ -132,14 +120,13 @@ class MainViewController: UIViewController {
             UIView.animate(withDuration: 0.2) {
                 self.brickImageView.center = self.brickImageCenter
             }
-            reloadWeather()
+            dataService.updateWeatherInfoByGeolocation()
         default:
             break
         }
     }
     
     @IBAction func currentLocationButtonAction(_ sender: UIButton) {
-        selectedCity = nil
         dataService.updateWeatherInfoByGeolocation()
     }
     
@@ -151,6 +138,7 @@ class MainViewController: UIViewController {
     
     @IBAction func searchLocationButtonAction(_ sender: UIButton) {
         searchLocation()
+        searchLocationTextField.text = ""
         searchLocationElements(shouldHide: true)
         mainElements(shouldHide: false)
         searchLocationTextField.resignFirstResponder()
@@ -181,13 +169,13 @@ extension MainViewController: UITextFieldDelegate, InfoViewDelegate, DataService
         mainElements(shouldHide: false)
     }
     
-    func updateViewForRecivedData(id: Int, description: String, temp: Double, windSpeed: Double, country: String, city: String) {
+    func updateViewForRecived(weather data: WeatherData) {
         brickImageView.layer.removeAllAnimations()
-        setBrickImageView(by: id, temp: temp)
-        temperatureLabel.text = String(Int(temp))
-        conditionOutsideLabel.text = description
-        locationLabel.text = city + ", " + country
-        if windSpeed > 4 {
+        setBrickImageView(by: data.weather[0].id, temp: data.main.temp)
+        temperatureLabel.text = String(Int(data.main.temp))
+        conditionOutsideLabel.text = data.weather[0].description
+        locationLabel.text = data.name + ", " + data.sys.countryName(from: data.sys.country)
+        if data.wind.speed > 4 {
             setDeflectBrickImageView()
         }
     }

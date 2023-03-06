@@ -44,7 +44,10 @@ class InfoView: UIView {
     private func loadViewFromXib() -> UIView {
         let bundle = Bundle(for: type(of: self))
         let nib = UINib(nibName: "InfoView", bundle: bundle)
-        return nib.instantiate (withOwner: self, options: nil).first! as! UIView
+        if let nibInstantiate = nib.instantiate(withOwner: self, options: nil).first as? UIView {
+            return nibInstantiate
+        }
+        return UIView()
     }
     
     private func setRoundingView(_ view: UIView) {

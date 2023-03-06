@@ -37,10 +37,8 @@ extension LocationService: CLLocationManagerDelegate {
             locationManager?.startUpdatingLocation()
             delegate?.disabledGeolocationError(show: false)
         case .denied, .notDetermined, .restricted:
-            print("Authorization status:", CLLocationManager.authorizationStatus().rawValue)
             delegate?.disabledGeolocationError(show: true)
         @unknown default:
-            print("Location authorization unknown")
             break
         }
     }
@@ -53,6 +51,6 @@ extension LocationService: CLLocationManagerDelegate {
     }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        print(error.localizedDescription)
+        delegate?.disabledGeolocationError(show: true)
     }
 }
