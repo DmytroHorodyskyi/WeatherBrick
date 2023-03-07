@@ -13,9 +13,7 @@ protocol DataServiceDelegate {
     
     func updateViewForRecived(weather data: WeatherData)
     func updateViewForError()
-    func showBadInternetConnectionAlert()
-    func showIncorrectCityNameAlert()
-    func disableGeolocationAlert(show: Bool)
+    func showAlertWith(title: String, message: String)
 }
 
 class DataService {
@@ -25,7 +23,7 @@ class DataService {
     var delegate: DataServiceDelegate?
     static let shared = DataService()
     
-    init(){
+    init() {
         locationService.delegate = self
     }
     
@@ -34,7 +32,7 @@ class DataService {
         let task = session.dataTask(with: url) { (data, response, error) in
             guard error == nil else {
                 DispatchQueue.main.async {
-                    self.delegate?.showBadInternetConnectionAlert()
+                    self.delegate?.showAlertWith(title: "Bad internet connection", message: "Check internet connection")
                     self.delegate?.updateViewForError()
                 }
                 return
@@ -63,7 +61,7 @@ class DataService {
                             "q=\(city)&units=metric&appid=\(appid)")
         else {
             DispatchQueue.main.async {
-                self.delegate?.showIncorrectCityNameAlert()
+                self.delegate?.showAlertWith(title: "Incorrect city name", message: "Check that the city name is entered correctly")
                 self.delegate?.updateViewForError()
             }
             return
@@ -79,25 +77,17 @@ extension DataService: LocationServiceDelegate {
         guard let latitude = latitude,
               let longitude = longitude,
               let url = URL(string: "https://api.openweathermap.org/data/2.5/weather?" +
-                                    "lat=\(latitude)" +
-                                    "&lon=\(longitude)" +
-                                    "&units=metric&appid=\(appid)")
+                            "lat=\(latitude)" +
+                            "&lon=\(longitude)" +
+                            "&units=metric&appid=\(appid)")
         else {return}
         executeDataTask(with: url)
     }
     
-    func disabledGeolocationError(show: Bool) {
-        switch show {
-        case true:
-            DispatchQueue.main.async {
-                self.delegate?.updateViewForError()
-                self.delegate?.disableGeolocationAlert(show: true)
-            }
-        case false:
-            DispatchQueue.main.async {
-                self.delegate?.disableGeolocationAlert(show: false)
-            }
+    func geolocationError() {
+        DispatchQueue.main.async {
+            self.delegate?.updateViewForError()
+            self.delegate?.showAlertWith(title: "Can't get geolocation", message: "Check if geolocation is enabeled in the application settings")
         }
-
     }
 }

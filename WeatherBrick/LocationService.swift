@@ -10,8 +10,8 @@ import UIKit
 import CoreLocation
 
 protocol LocationServiceDelegate {
-    func createUrlAndExecuteDataTaskWith(latitude: Double?, longitude: Double? )
-    func disabledGeolocationError(show: Bool)
+    func createUrlAndExecuteDataTaskWith(latitude: Double?, longitude: Double?)
+    func geolocationError()
 }
 
 class LocationService: NSObject {
@@ -22,9 +22,9 @@ class LocationService: NSObject {
     
     
     func getCurrentLocation() {
-        locationManager = CLLocationManager()
-        locationManager?.delegate = self
-        locationManager?.requestWhenInUseAuthorization()
+        self.locationManager = CLLocationManager()
+        self.locationManager?.delegate = self
+        self.locationManager?.requestWhenInUseAuthorization()
     }
 }
 
@@ -34,11 +34,8 @@ extension LocationService: CLLocationManagerDelegate {
     func locationManagerDidChangeAuthorization(_ manager: CLLocationManager) {
         switch CLLocationManager.authorizationStatus() {
         case .authorizedAlways, .authorizedWhenInUse:
-            locationManager?.startUpdatingLocation()
-            delegate?.disabledGeolocationError(show: false)
-        case .denied, .notDetermined, .restricted:
-            delegate?.disabledGeolocationError(show: true)
-        @unknown default:
+            self.locationManager?.startUpdatingLocation()
+        default:
             break
         }
     }
@@ -51,6 +48,6 @@ extension LocationService: CLLocationManagerDelegate {
     }
     
     func locationManager(_ manager: CLLocationManager, didFailWithError error: Error) {
-        delegate?.disabledGeolocationError(show: true)
+        delegate?.geolocationError()
     }
 }

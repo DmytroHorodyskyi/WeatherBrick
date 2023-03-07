@@ -23,7 +23,6 @@ class MainViewController: UIViewController {
     @IBOutlet weak var infoButton: UIButton!
     @IBOutlet weak var infoView: InfoView!
     private var brickImageCenter = CGPoint()
-    //private var selectedCity: String? = nil
     private let dataService = DataService.shared
     
     override func viewDidLoad() {
@@ -158,7 +157,7 @@ class MainViewController: UIViewController {
 
 
 extension MainViewController: UITextFieldDelegate, InfoViewDelegate, DataServiceDelegate {
-
+    
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         searchLocation()
         return false
@@ -188,31 +187,13 @@ extension MainViewController: UITextFieldDelegate, InfoViewDelegate, DataService
         locationLabel.text = ""
     }
     
-    func showBadInternetConnectionAlert() {
-        let alertController = UIAlertController(title: "Bad internet connection", message: "Check internet connection", preferredStyle: .alert)
+    func showAlertWith(title: String, message:String) {
+        let alertController = UIAlertController(title: title, message: message, preferredStyle: .alert)
         let action = UIAlertAction(title: "OK", style: .default)
         alertController.addAction(action)
         self.present(alertController, animated: true)
-    }
-    
-    func showIncorrectCityNameAlert() {
-        let alertController = UIAlertController(title: "Incorrect city name", message: "Check that the city name is entered correctly", preferredStyle: .alert)
-        let action = UIAlertAction(title: "OK", style: .default)
-        alertController.addAction(action)
-        self.present(alertController, animated: true)
-    }
-    
-    func disableGeolocationAlert(show: Bool) {
-        let alertController = UIAlertController(title: "Can't get geolocation", message: "Check if geolocation is enabeled in the application settings", preferredStyle: .alert)
-        let action = UIAlertAction(title: "OK", style: .default)
-        alertController.addAction(action)
-        switch show {
-        case true:
-            self.present(alertController, animated: true)
-        case false:
-            self.dismiss(animated: false)
-        }
     }
 }
+
 
 
