@@ -22,6 +22,11 @@ class MainViewController: UIViewController {
     @IBOutlet weak var backFromSearchLoactionButton: UIButton!
     @IBOutlet weak var infoButton: UIButton!
     @IBOutlet weak var infoView: InfoView!
+    private let normalStoneImage = UIImage(named: "image_stone_normal")
+    private let wetStoneImage = UIImage(named: "image_stone_wet" )
+    private let snowStoneImage = UIImage(named: "image_stone_snow" )
+    private let crackedStoneImage = UIImage(named: "image_stone_cracks")
+    private let withoutStoneImage = UIImage(named: "image_without_stone")
     private var brickImageCenter = CGPoint()
     private let dataService = DataService.shared
     
@@ -51,36 +56,37 @@ class MainViewController: UIViewController {
         brickImageView.alpha = 1
         switch id {
         case 200..<600:
-            brickImageView.image = UIImage(named: "image_stone_wet" )
+            brickImageView.image = wetStoneImage
         case 600..<700:
-            brickImageView.image = UIImage(named: "image_stone_snow" )
+            brickImageView.image = snowStoneImage
         case 700..<800:
-            brickImageView.image = UIImage(named: "image_stone_normal")
+            brickImageView.image = normalStoneImage
             brickImageView.alpha = 0.2
             if temp >= 25 {
-                brickImageView.image = UIImage(named: "image_stone_cracks")
+                brickImageView.image = crackedStoneImage
             }
         default:
-            brickImageView.image = UIImage(named: "image_stone_normal")
+            brickImageView.image = normalStoneImage
             if temp >= 25 {
-                brickImageView.image = UIImage(named: "image_stone_cracks")
+                brickImageView.image = crackedStoneImage
             }
         }
     }
     
-    private func mainElements(shouldHide: Bool) {
-        brickImageView.isHidden = shouldHide
-        temperatureLabel.isHidden = shouldHide
-        degreesLabel.isHidden = shouldHide
-        locationStackView.isHidden = shouldHide
-        conditionOutsideLabel.isHidden = shouldHide
-        infoButton.isHidden = shouldHide
+    private func hideMainElements(_ hide: Bool) {
+        brickImageView.isHidden = hide
+        temperatureLabel.isHidden = hide
+        degreesLabel.isHidden = hide
+        locationStackView.isHidden = hide
+        conditionOutsideLabel.isHidden = hide
+        infoButton.isHidden = hide
     }
     
-    private func searchLocationElements(shouldHide: Bool) {
-        searchLocationTextField.isHidden = shouldHide
-        searchLocationButton.isHidden = shouldHide
-        backFromSearchLoactionButton.isHidden = shouldHide
+    private func showSearchView(_ show: Bool) {
+        hideMainElements(show)
+        searchLocationTextField.isHidden = !show
+        searchLocationButton.isHidden = !show
+        backFromSearchLoactionButton.isHidden = !show
     }
     
     private func setDeflectBrickImageView() {
@@ -97,10 +103,9 @@ class MainViewController: UIViewController {
     }
     
     private func searchLocation() {
-        let city: String = searchLocationTextField.text ?? ""
-        if city != "" {
+        guard let city = searchLocationTextField.text, city != ""
+        else {return}
             dataService.updateWeatherInfo(by: city)
-        }
     }
     
     @IBAction func brickImageGestureRecognize(_ sender: UIPanGestureRecognizer) {
@@ -131,44 +136,47 @@ class MainViewController: UIViewController {
     
     
     @IBAction func magnifyingGlassButtonAction(_ sender: UIButton) {
-        searchLocationElements(shouldHide: false)
-        mainElements(shouldHide: true)
+        showSearchView(true)
     }
     
     @IBAction func searchLocationButtonAction(_ sender: UIButton) {
         searchLocation()
         searchLocationTextField.text = ""
-        searchLocationElements(shouldHide: true)
-        mainElements(shouldHide: false)
+        showSearchView(false)
         searchLocationTextField.resignFirstResponder()
     }
     
     @IBAction func backFroamSearchLocationButtonAction(_ sender: UIButton) {
-        searchLocationElements(shouldHide: true)
-        mainElements(shouldHide: false)
+        showSearchView(false)
         searchLocationTextField.resignFirstResponder()
     }
     
     @IBAction func infoButtonAction(_ sender: UIButton) {
         infoView.isHidden = false
-        mainElements(shouldHide: true)
+        hideMainElements(true)
     }
 }
 
 
-extension MainViewController: UITextFieldDelegate, InfoViewDelegate, DataServiceDelegate {
+extension MainViewController: UITextFieldDelegate {
     
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         searchLocation()
         return false
     }
+}
+
+extension MainViewController: InfoViewDelegate {
     
     func closeInfoView() {
         infoView.isHidden = true
-        mainElements(shouldHide: false)
+        hideMainElements(false)
     }
+}
+
+extension MainViewController: DataServiceDelegate {
     
-    func updateViewForRecived(weather data: WeatherData) {
+    func updateViewForReceived(weather data: WeatherData) {
         brickImageView.layer.removeAllAnimations()
         setBrickImageView(by: data.weather[0].id, temp: data.main.temp)
         temperatureLabel.text = String(Int(data.main.temp))
@@ -181,7 +189,7 @@ extension MainViewController: UITextFieldDelegate, InfoViewDelegate, DataService
     
     func updateViewForError() {
         brickImageView.layer.removeAllAnimations()
-        brickImageView.image = UIImage(named: "image_without_stone" )
+        brickImageView.image = withoutStoneImage
         temperatureLabel.text = "--"
         conditionOutsideLabel.text = ""
         locationLabel.text = ""

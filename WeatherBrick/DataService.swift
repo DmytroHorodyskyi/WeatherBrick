@@ -11,7 +11,7 @@ import UIKit
 
 protocol DataServiceDelegate {
     
-    func updateViewForRecived(weather data: WeatherData)
+    func updateViewForReceived(weather data: WeatherData)
     func updateViewForError()
     func showAlertWith(title: String, message: String)
 }
@@ -41,7 +41,7 @@ class DataService {
                 guard let data = data else {return}
                 let weatherData = try JSONDecoder().decode(WeatherData.self, from: data)
                 DispatchQueue.main.async {
-                    self.delegate?.updateViewForRecived(weather: weatherData)
+                    self.delegate?.updateViewForReceived(weather: weatherData)
                 }
             } catch {
                 DispatchQueue.main.async {
