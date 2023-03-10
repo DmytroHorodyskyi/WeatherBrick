@@ -1,7 +1,7 @@
 # WeatherBrick
 
-Simple IOS application for different operations with collections. \
-Aims at deep understanding of collections and execution times of the same operations with a different approach. Also shows the importance of multithreading for creating user-friendly applications that run smoothly.
+Weather forecast application \
+The application that works with the location and weather API.
 
 ## Required functionality
 - Determine the current location of the user and display the weather.
